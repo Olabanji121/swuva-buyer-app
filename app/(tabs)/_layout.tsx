@@ -1,59 +1,69 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+/**
+ * Tabs Layout - Native Tabs with Liquid Glass Effect
+ *
+ * Uses expo-router's NativeTabs for native iOS tab bar with liquid glass effect.
+ * On iOS 26+, this automatically renders Apple's native UITabBarController
+ * with the translucent glass material.
+ *
+ * Based on Figma design: node 169:2690
+ */
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { DynamicColorIOS, Platform } from 'react-native';
+import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+// Dynamic colors that adapt to liquid glass background
+const activeColor = Platform.OS === 'ios'
+  ? DynamicColorIOS({ dark: '#60D394', light: '#60D394' })
+  : '#60D394';
+
+const inactiveColor = Platform.OS === 'ios'
+  ? DynamicColorIOS({ dark: '#AEAEB2', light: '#AEAEB2' })
+  : '#AEAEB2';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    <NativeTabs
+      tintColor={activeColor}
+      iconColor={{
+        default: inactiveColor,
+        selected: activeColor,
+      }}
+    >
+      {/* Home Tab */}
+      <NativeTabs.Trigger name="index">
+        <Icon
+          sf={{ default: 'house', selected: 'house.fill' }}
+          drawable="ic_home"
+        />
+        <Label hidden />
+      </NativeTabs.Trigger>
+
+      {/* Favorites Tab */}
+      <NativeTabs.Trigger name="favorites">
+        <Icon
+          sf={{ default: 'heart', selected: 'heart.fill' }}
+          drawable="ic_heart"
+        />
+        <Label hidden />
+      </NativeTabs.Trigger>
+
+      {/* Cart Tab */}
+      <NativeTabs.Trigger name="cart">
+        <Icon
+          sf={{ default: 'cart', selected: 'cart.fill' }}
+          drawable="ic_cart"
+        />
+        <Label hidden />
+      </NativeTabs.Trigger>
+
+      {/* Profile Tab */}
+      <NativeTabs.Trigger name="profile">
+        <Icon
+          sf={{ default: 'person', selected: 'person.fill' }}
+          drawable="ic_person"
+        />
+        <Label hidden />
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }

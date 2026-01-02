@@ -1,0 +1,18 @@
+/**
+ * Listing Stack Layout
+ *
+ * Stack navigator for listing-related screens.
+ */
+
+import { Stack } from 'expo-router';
+
+export default function ListingLayout() {
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: 'slide_from_right',
+      }}
+    />
+  );
+}

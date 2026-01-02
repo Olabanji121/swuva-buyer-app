@@ -2,9 +2,28 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
+      ],
+      "@assets/*": [
+        "./assets/*"
+      ],
+      "@/components/useColorScheme": [
+        "./components/useColorScheme"
+      ],
+      "@/components/useClientOnlyValue": [
+        "./components/useClientOnlyValue"
+      ],
+      "@/components/EditScreenInfo": [
+        "./components/EditScreenInfo"
+      ],
+      "@/components/Themed": [
+        "./components/Themed"
+      ],
+      "@/constants/Colors": [
+        "./constants/Colors"
       ]
     }
   },
@@ -12,6 +31,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "nativewind-env.d.ts"
   ]
 }
