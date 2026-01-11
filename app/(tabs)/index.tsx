@@ -11,7 +11,7 @@
 import { useState, useCallback } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,6 +39,7 @@ import {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -86,36 +87,50 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <View className="flex-1 bg-white">
       <StatusBar style="dark" />
 
-      <ScrollView
-        className="flex-1"
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#60d394"
-          />
-        }
+      {/* Fixed Header */}
+      <View
+        className="absolute top-0 left-0 right-0 z-10 bg-white pb-4"
+        style={{
+          paddingTop: insets.top + 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          elevation: 3,
+        }}
       >
-        {/* Header */}
         <HomeHeader
           location={CURRENT_LOCATION}
           hasNotifications={true}
           onLocationPress={() => {}}
           onNotificationPress={() => {}}
-          className="pt-2"
         />
 
-        {/* Search Bar */}
         <SearchBar
           onPress={handleSearchPress}
           onSettingsPress={handleFilterPress}
-          className="mt-5"
+          className="mt-4"
         />
+      </View>
 
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: insets.top + 130, // Space for fixed header
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#60d394"
+            progressViewOffset={insets.top + 130}
+          />
+        }
+      >
         {/* Promo Banner */}
         <PromoBanner
           banner={PROMO_BANNER}
@@ -210,6 +225,6 @@ export default function HomeScreen() {
         onApply={handleApplyFilters}
         initialValues={filters || undefined}
       />
-    </SafeAreaView>
+    </View>
   );
 }
